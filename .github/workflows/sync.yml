@@ -28,4 +28,4 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run synchronization
         run: |
-          echo python3 sync.py -d -v
+          python3 sync.py -d -v
