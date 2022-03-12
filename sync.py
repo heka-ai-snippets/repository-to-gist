@@ -22,7 +22,7 @@ from api import FilesManager
 # ================================ 1. CREDENTIALS
 
 
-personal_access_token = os.environ['GITHUB_ACCESS_TOKEN']
+personal_access_token = os.environ['PERSONAL_ACCESS_TOKEN']
 
 
 # =========================================================================================================
