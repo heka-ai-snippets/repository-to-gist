@@ -27,5 +27,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Run synchronization
+        env:
+            PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN}}
         run: |
           python3 sync.py -d -v
