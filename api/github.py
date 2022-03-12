@@ -4,6 +4,9 @@
 
 """
 Classes & functions related to github gists APIs
+
+ref:
+    * https://docs.github.com/en/rest/reference/gists
 """
 
 
@@ -20,7 +23,7 @@ import json
 
 
 class GithubManager(object):
-    def __init__(self, user, token):
+    def __init__(self, user, token, verbose=True):
         """Wrapper to manage a few github actions
 
         Parameters
@@ -30,6 +33,8 @@ class GithubManager(object):
         token : str
             Personal access token with repo-read and gists-create rights
         """
+        self.verbose = verbose
+
         # Start session
         self.user = user
         self.session = Session()
@@ -60,6 +65,8 @@ class GithubManager(object):
             List of all available gists
         """
         user = self.user if user is None else user
+        print(f'Listing gists for {user}...')
+
         gists_url = f'https://api.github.com/users/{user}/gists'
         res = []
 
@@ -74,13 +81,12 @@ class GithubManager(object):
             if get.status_code == 200:
                 res.extend(get.json())
             else: 
-                print(get.content)
                 break
 
         # Extract information
         res = [{
             'id': d['id'],
-            'file': d['files'], 
+            'gist_name': list(d['files'].keys())[0], 
             'description': d['description'],
             'url': d['html_url']} for d in res]
 
@@ -116,4 +122,28 @@ class GithubManager(object):
 
         res = self.session.post(gists_url, data=json.dumps(data))
 
+        if self.verbose:
+            if (res.status_code // 100) == 2:
+                print(f'    {filename}: created!')
+            else:
+                print(f'    {filename}: failed ({res.json()["message"]})')
+
         return res.json()['id']
+
+    def delete_gists(self, gists_id):
+        """Delete github gists
+
+        Parameters
+        ----------
+        gists_id : List[str]
+            List of gist ids to delete 
+        """
+        gists_url = 'https://api.github.com/gists/'
+        for id in gists_id:
+            res = self.session.delete(gists_url + id)
+
+            if self.verbose:
+                if (res.status_code // 100) == 2:
+                    print(f'    {id}: deleted!')
+                else:
+                    print(f'    {id}: {res.json()["message"]}')
