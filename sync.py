@@ -41,7 +41,7 @@ def sync_folder_to_gists(delete, verbose):
         Whether to delete gists that no longer matches a file, by default False
     """
     # Connect to wrapper
-    heka_ai_snippet = GithubManager('HugoooPerrin', personal_access_token, verbose=verbose)
+    heka_ai_snippet = GithubManager('heka-ai-snippets', personal_access_token, verbose=verbose)
     snippet_folder = FilesManager('./snippets')
 
     # Load both existing gists and files
