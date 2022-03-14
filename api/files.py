@@ -14,6 +14,8 @@ Classes & functions related to file management
 import os
 from glob import glob
 
+import hashlib
+
 
 # =========================================================================================================
 # ================================ 1. CLASSES
@@ -31,7 +33,7 @@ class FilesManager(object):
         self.path = os.getcwd() if path is None else path
         print(f'Linked to {self.path}')
 
-    def list_files(self):
+    def list_files(self, get_checksum=False):
         """_summary_
 
         Returns
@@ -41,10 +43,14 @@ class FilesManager(object):
         """
         print(f'Listing files in {self.path}')
         files = glob(f'{self.path}/**/*.*', recursive=True)
-        files = [f.split(self.path)[1] for f in files]
-        return files
+        file_names = [f.split(self.path)[1] for f in files]
+        if get_checksum:
+            checksums = [hashlib.md5(self.get_file(f, binary=True)).hexdigest() for f in file_names]
+            return list(zip(file_names, checksums))
+        else:
+            return file_names
 
-    def get_file(self, relative_path):
+    def get_file(self, relative_path, binary=False):
         """Collect the content of a file as a string
 
         Parameters
@@ -57,5 +63,6 @@ class FilesManager(object):
         str
             Content of the file
         """
-        with open(f'{self.path}/{relative_path}', 'r') as file:
+        format = 'rb' if binary else 'r'
+        with open(f'{self.path}/{relative_path}', format) as file:
             return file.read()

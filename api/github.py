@@ -92,7 +92,7 @@ class GithubManager(object):
 
         return res
 
-    def create_gists(self, filename, content, public=True):
+    def create_gists(self, filename, description, content, public=True):
         """Create a gist based on some string content
 
         Parameters
@@ -112,7 +112,7 @@ class GithubManager(object):
         gists_url = 'https://api.github.com/gists'
         data = {
             'public': public,
-            'description': filename,
+            'description': description,
             'files': {
                 filename.split('/')[-1]: {
                     'content': content,

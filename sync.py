@@ -46,24 +46,24 @@ def sync_folder_to_gists(delete, verbose):
 
     # Load both existing gists and files
     gists = heka_ai_snippet.list_gists()
-    files = snippet_folder.list_files()
+    files = snippet_folder.list_files(get_checksum=True)
 
     # New files without gists : unicity based on description (saved full path)
     print('Creating new gists', end='...')
-    files_to_create_as_gists = [f for f in files if f not in [g['description'] for g in gists]]
+    files_to_create_as_gists = [(f, checksum) for (f, checksum) in files if checksum not in [g['description'] for g in gists]]
     if not files_to_create_as_gists:
         print('none')
     else: 
         print('')
 
     # Create corresponding gists
-    for f in files_to_create_as_gists:
-        heka_ai_snippet.create_gists(f, snippet_folder.get_file(f))
+    for f, checksum in files_to_create_as_gists:
+        heka_ai_snippet.create_gists(f, description=checksum, content=snippet_folder.get_file(f))
 
     # Delete gists that no longer matches a file
     if delete:
         print('Deleting gists without files', end='...')
-        if gists_id_without_file := [g['id'] for g in gists if g['description'] not in files]:
+        if gists_id_without_file := [g['id'] for g in gists if g['description'] not in [checksum for f, checksum in files]]:
             print('')
             heka_ai_snippet.delete_gists(gists_id_without_file)
         else:
