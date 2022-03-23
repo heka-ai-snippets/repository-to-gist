@@ -1,39 +1,26 @@
 import logging
 import sys
 
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 
 
-@app.route("/")
-def index():
-    return "Web App with Python Flask!"
+@app.route("/pizza-bug", methods=["POST"])
+def make_bugs():
+    slices = 12
 
+    nbr_guests = request.json["guests"]
 
-@app.route("/cpu", methods=["GET"])
-def cpu_test():
-
-    res = 0
-    for i in range(1000):
-        res = res + 1
-
-    return f"This is function use high cpu : {res}"
-
-
-@app.route("/ram", methods=["GET"])
-def ram_test():
-
-    res = [0]
-    for i in range(100):
-        res = [0] * i
-
-    return f"This is function use high ram : {res}"
+    try:
+        return f"There will be {slices / nbr_guests} slices each"
+    except:
+        return "This is a bad practice :) "
 
 
 if __name__ == "__main__":
     try:
-        # Setup a logger for debugpy to print into stdout
+        # Setup a logger for debugpy
         debugpy_logger = logging.getLogger("debugpy")
         debugpy_logger.setLevel(logging.DEBUG)
         stdout_handler = logging.StreamHandler(sys.stdout)
