@@ -4,9 +4,9 @@
     {
       "name": "live-debug-app: Remote Attach",
       "type": "python",
-      //attach debugger instead of a classic run
+      //attach debugger instead of a classic run (2)
       "request": "attach",
-      //where should it listen
+      //where should it listen (4)
       "connect": {
         "host": "localhost",
         "port": 5678
@@ -15,7 +15,7 @@
         {
           "localRoot": "${workspaceFolder}",
           "cwd": "${workspaceFolder}",
-          //where the code is in your container (see Dockerfile)
+          //where the code is in your container (5) (see Dockerfile)
           "remoteRoot": "/app"
         }
       ]
